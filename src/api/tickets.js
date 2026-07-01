@@ -21,6 +21,12 @@ export const addComment = (id, body) =>
 
 export const listAreas = () => api.get('/areas').then((r) => r.data)
 
+export const listDevices = (params = {}) =>
+  api.get('/devices', { params }).then((r) => r.data)
+
+export const getDeviceByQR = (token) =>
+  api.get(`/devices/by-qr/${encodeURIComponent(token)}`).then((r) => r.data)
+
 export const listItUsers = () =>
   api.get('/users', { params: { role: 'it' } }).then((r) => r.data)
 

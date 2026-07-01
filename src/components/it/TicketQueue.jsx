@@ -13,6 +13,7 @@ export default function TicketQueue({ tickets }) {
             <th className="px-3 py-2">#</th>
             <th className="px-3 py-2">Título</th>
             <th className="px-3 py-2">Área</th>
+            <th className="px-3 py-2">Equipo</th>
             <th className="px-3 py-2">Estado</th>
             <th className="px-3 py-2">Urgencia</th>
             <th className="px-3 py-2">Reportado por</th>
@@ -30,6 +31,7 @@ export default function TicketQueue({ tickets }) {
               </td>
               <td className="px-3 py-2">{t.title}</td>
               <td className="px-3 py-2">{t.area_name || '—'}</td>
+              <td className="px-3 py-2">{t.device?.name || '—'}</td>
               <td className="px-3 py-2">
                 <StatusBadge value={t.status} />
               </td>

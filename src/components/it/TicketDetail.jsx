@@ -44,8 +44,15 @@ export default function TicketDetail({ ticket, onUpdated }) {
             <h1 className="text-xl font-semibold">
               #{ticket.id} · {ticket.title}
             </h1>
-            <div className="text-sm text-gray-500 mt-1">
-              {ticket.area_name || 'Sin área'} · Reportó {ticket.reporter?.full_name}
+            <div className="text-sm text-gray-500 mt-1 space-y-0.5">
+              <div>{ticket.area_name || 'Sin área'} · Reportó {ticket.reporter?.full_name}</div>
+              {ticket.device && (
+                <div>
+                  Equipo: <span className="font-medium text-gray-700">{ticket.device.name}</span>
+                  {' · '}{ticket.device.device_type}
+                  {ticket.device.location && ` · ${ticket.device.location}`}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-2">

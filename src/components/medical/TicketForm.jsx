@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { createTicket, listAreas } from '../../api/tickets'
+import { useAuth } from '../../hooks/useAuth'
+import DeviceSelector from './DeviceSelector'
 
 const URGENCIES = ['baja', 'media', 'alta', 'critica']
 
 export default function TicketForm({ onCreated }) {
+  const { user } = useAuth()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [urgency, setUrgency] = useState('media')
   const [areaId, setAreaId] = useState('')
+  const [device, setDevice] = useState(null)
   const [areas, setAreas] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -18,6 +22,10 @@ export default function TicketForm({ onCreated }) {
 
   const submit = async (e) => {
     e.preventDefault()
+    if (!device) {
+      setError('Debes seleccionar un equipo')
+      return
+    }
     setError(null)
     setSubmitting(true)
     try {
@@ -26,11 +34,13 @@ export default function TicketForm({ onCreated }) {
         description,
         urgency,
         area_id: areaId ? Number(areaId) : null,
+        device_id: device.id,
       })
       setTitle('')
       setDescription('')
       setUrgency('media')
       setAreaId('')
+      setDevice(null)
       onCreated?.(t)
     } catch (err) {
       setError(err.response?.data?.detail || 'Error al crear ticket')
@@ -55,6 +65,11 @@ export default function TicketForm({ onCreated }) {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
+      />
+      <DeviceSelector
+        areaId={user?.area_id}
+        selectedDevice={device}
+        onSelect={setDevice}
       />
       <div className="grid grid-cols-2 gap-3">
         <select
