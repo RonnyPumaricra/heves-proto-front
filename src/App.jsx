@@ -4,7 +4,6 @@ import LoginQR from './pages/LoginQR'
 import MedicalHome from './pages/MedicalHome'
 import ITDashboard from './pages/ITDashboard'
 import TicketDetailPage from './pages/TicketDetailPage'
-import NotFound from './pages/NotFound'
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
 
@@ -45,7 +44,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
