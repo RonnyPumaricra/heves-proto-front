@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { StatusBadge, UrgencyBadge } from '../common/StatusBadge'
+import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
 
 export default function TicketQueue({ tickets }) {
   if (!tickets.length) {
@@ -15,7 +15,7 @@ export default function TicketQueue({ tickets }) {
             <th className="px-3 py-2">Área</th>
             <th className="px-3 py-2">Equipo</th>
             <th className="px-3 py-2">Estado</th>
-            <th className="px-3 py-2">Urgencia</th>
+            <th className="px-3 py-2">Prioridad</th>
             <th className="px-3 py-2">Reportado por</th>
             <th className="px-3 py-2">Asignado a</th>
             <th className="px-3 py-2">Creado</th>
@@ -25,7 +25,7 @@ export default function TicketQueue({ tickets }) {
           {tickets.map((t) => (
             <tr key={t.id} className="border-t border-gray-100 hover:bg-gray-50">
               <td className="px-3 py-2">
-                <Link className="text-blue-600 hover:underline" to={`/ti/tickets/${t.id}`}>
+                <Link className="text-blue-600 hover:underline" to={`/tecnico/tickets/${t.id}`}>
                   {t.id}
                 </Link>
               </td>
@@ -36,7 +36,7 @@ export default function TicketQueue({ tickets }) {
                 <StatusBadge value={t.status} />
               </td>
               <td className="px-3 py-2">
-                <UrgencyBadge value={t.urgency} />
+                <PriorityBadge value={t.priority} />
               </td>
               <td className="px-3 py-2">{t.reporter?.full_name}</td>
               <td className="px-3 py-2">{t.assigned_to?.full_name || '—'}</td>

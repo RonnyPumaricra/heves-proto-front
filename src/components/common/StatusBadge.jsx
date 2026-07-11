@@ -5,7 +5,7 @@ const STATUS_STYLES = {
   closed: 'bg-gray-200 text-gray-700',
 }
 
-const URGENCY_STYLES = {
+const PRIORITY_STYLES = {
   baja: 'bg-gray-100 text-gray-700',
   media: 'bg-blue-100 text-blue-700',
   alta: 'bg-orange-100 text-orange-700',
@@ -17,7 +17,7 @@ export function StatusBadge({ value }) {
   return <span className={`px-2 py-0.5 rounded text-xs font-medium ${cls}`}>{value}</span>
 }
 
-export function UrgencyBadge({ value }) {
-  const cls = URGENCY_STYLES[value] || 'bg-gray-100 text-gray-700'
+export function PriorityBadge({ value }) {
+  const cls = PRIORITY_STYLES[value] || 'bg-gray-100 text-gray-700'
   return <span className={`px-2 py-0.5 rounded text-xs font-medium ${cls}`}>{value}</span>
 }

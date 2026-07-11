@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../components/common/Navbar'
-import TicketForm from '../components/medical/TicketForm'
-import { StatusBadge, UrgencyBadge } from '../components/common/StatusBadge'
+import TicketForm from '../components/user/TicketForm'
+import { StatusBadge, PriorityBadge } from '../components/common/StatusBadge'
 import { listMyTickets } from '../api/tickets'
 
-export default function MedicalHome() {
+export default function UserHome() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -48,7 +48,7 @@ export default function MedicalHome() {
                   </div>
                   <div className="flex gap-2">
                     <StatusBadge value={t.status} />
-                    <UrgencyBadge value={t.urgency} />
+                    <PriorityBadge value={t.priority} />
                   </div>
                 </li>
               ))}

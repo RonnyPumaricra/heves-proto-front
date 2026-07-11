@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
-import TicketDetail from '../components/it/TicketDetail'
+import TicketDetail from '../components/tickets/TicketDetail'
 import { getTicket } from '../api/tickets'
 
 export default function TicketDetailPage() {
@@ -19,7 +19,7 @@ export default function TicketDetailPage() {
     <div>
       <Navbar />
       <div className="max-w-3xl mx-auto p-6">
-        <Link to="/ti" className="text-sm text-blue-600 hover:underline">
+        <Link to="/tecnico" className="text-sm text-blue-600 hover:underline">
           ← Volver al panel
         </Link>
         <div className="mt-4">

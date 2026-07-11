@@ -1,7 +1,14 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { login } from '../api/auth'
 import { useAuth } from '../hooks/useAuth'
+
+const HOME_BY_ROLE = {
+  usuario: '/usuario',
+  tecnico: '/tecnico',
+  supervisor: '/tecnico',
+  admin: '/tecnico',
+}
 
 export default function LoginStaff() {
   const [email, setEmail] = useState('')
@@ -18,7 +25,7 @@ export default function LoginStaff() {
     try {
       const data = await login(email, password)
       loginWith(data)
-      nav(data.role === 'medico' ? '/medico' : '/ti', { replace: true })
+      nav(HOME_BY_ROLE[data.role] || '/', { replace: true })
     } catch (err) {
       setError(err.response?.data?.detail || 'Error al iniciar sesión')
     } finally {
@@ -32,12 +39,13 @@ export default function LoginStaff() {
         onSubmit={submit}
         className="bg-white p-8 border border-gray-200 rounded shadow-sm w-full max-w-sm space-y-4"
       >
-        <h1 className="text-xl font-semibold text-center">Ingreso TI / Admin</h1>
+        <h1 className="text-xl font-semibold text-center">Servicedesk Universitario</h1>
+        <p className="text-sm text-gray-500 text-center">Ingresa con tu correo institucional</p>
         <input
           type="email"
           required
           className="w-full border border-gray-300 rounded px-3 py-2"
-          placeholder="correo@hospital.local"
+          placeholder="correo@untels.edu.pe"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -56,12 +64,6 @@ export default function LoginStaff() {
         >
           {submitting ? 'Ingresando…' : 'Ingresar'}
         </button>
-        <div className="text-sm text-center text-gray-500">
-          ¿Personal médico?{' '}
-          <Link to="/login/qr" className="text-blue-600 hover:underline">
-            Ingresar con QR
-          </Link>
-        </div>
       </form>
     </div>
   )

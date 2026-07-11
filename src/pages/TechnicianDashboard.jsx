@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import Navbar from '../components/common/Navbar'
-import TicketFilters from '../components/it/TicketFilters'
-import TicketQueue from '../components/it/TicketQueue'
+import TicketFilters from '../components/tickets/TicketFilters'
+import TicketQueue from '../components/tickets/TicketQueue'
 import { listTickets, summaryStats } from '../api/tickets'
 
-export default function ITDashboard() {
+export default function TechnicianDashboard() {
   const [filters, setFilters] = useState({})
   const [tickets, setTickets] = useState([])
   const [stats, setStats] = useState(null)
@@ -36,7 +36,7 @@ export default function ITDashboard() {
             <StatCard label="Resueltos" value={stats.by_status?.resolved || 0} />
             <StatCard
               label="Críticos"
-              value={stats.by_urgency?.critica || 0}
+              value={stats.by_priority?.critica || 0}
               accent="text-red-600"
             />
           </div>

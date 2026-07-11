@@ -1,15 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
+const HOME_BY_ROLE = {
+  usuario: '/usuario',
+  tecnico: '/tecnico',
+  supervisor: '/tecnico',
+  admin: '/tecnico',
+}
+
 export default function Navbar() {
   const { user, logout } = useAuth()
   const nav = useNavigate()
   if (!user) return null
-  const home = user.role === 'medico' ? '/medico' : '/ti'
+  const home = HOME_BY_ROLE[user.role] || '/'
   return (
     <nav className="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center">
       <Link to={home} className="font-semibold text-blue-700">
-        Tickets TI · Hospital
+        Servicedesk · Universidad
       </Link>
       <div className="flex items-center gap-4 text-sm">
         <span className="text-gray-600">
@@ -18,7 +25,7 @@ export default function Navbar() {
         <button
           onClick={() => {
             logout()
-            nav('/login/staff', { replace: true })
+            nav('/login', { replace: true })
           }}
           className="text-red-600 hover:underline"
         >

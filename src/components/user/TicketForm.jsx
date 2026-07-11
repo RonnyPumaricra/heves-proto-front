@@ -3,13 +3,13 @@ import { createTicket, listAreas } from '../../api/tickets'
 import { useAuth } from '../../hooks/useAuth'
 import DeviceSelector from './DeviceSelector'
 
-const URGENCIES = ['baja', 'media', 'alta', 'critica']
+const PRIORITIES = ['baja', 'media', 'alta', 'critica']
 
 export default function TicketForm({ onCreated }) {
   const { user } = useAuth()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [urgency, setUrgency] = useState('media')
+  const [priority, setPriority] = useState('media')
   const [areaId, setAreaId] = useState('')
   const [device, setDevice] = useState(null)
   const [areas, setAreas] = useState([])
@@ -22,23 +22,19 @@ export default function TicketForm({ onCreated }) {
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!device) {
-      setError('Debes seleccionar un equipo')
-      return
-    }
     setError(null)
     setSubmitting(true)
     try {
       const t = await createTicket({
         title,
         description,
-        urgency,
+        priority,
         area_id: areaId ? Number(areaId) : null,
-        device_id: device.id,
+        device_id: device?.id ?? null,
       })
       setTitle('')
       setDescription('')
-      setUrgency('media')
+      setPriority('media')
       setAreaId('')
       setDevice(null)
       onCreated?.(t)
@@ -54,7 +50,7 @@ export default function TicketForm({ onCreated }) {
       <h2 className="font-semibold text-lg">Reportar incidencia</h2>
       <input
         className="w-full border border-gray-300 rounded px-3 py-2"
-        placeholder="Título breve (ej. Impresora no imprime)"
+        placeholder="Título breve (ej. No abre el aula virtual)"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
@@ -66,20 +62,15 @@ export default function TicketForm({ onCreated }) {
         onChange={(e) => setDescription(e.target.value)}
         required
       />
-      <DeviceSelector
-        areaId={user?.area_id}
-        selectedDevice={device}
-        onSelect={setDevice}
-      />
       <div className="grid grid-cols-2 gap-3">
         <select
           className="border border-gray-300 rounded px-3 py-2"
-          value={urgency}
-          onChange={(e) => setUrgency(e.target.value)}
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
         >
-          {URGENCIES.map((u) => (
-            <option key={u} value={u}>
-              Urgencia: {u}
+          {PRIORITIES.map((p) => (
+            <option key={p} value={p}>
+              Prioridad: {p}
             </option>
           ))}
         </select>
@@ -96,6 +87,11 @@ export default function TicketForm({ onCreated }) {
           ))}
         </select>
       </div>
+      <DeviceSelector
+        areaId={user?.area_id}
+        selectedDevice={device}
+        onSelect={setDevice}
+      />
       {error && <div className="text-sm text-red-600">{error}</div>}
       <button
         type="submit"

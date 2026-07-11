@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
-import { addComment, listComments, listItUsers, updateTicket } from '../../api/tickets'
-import { StatusBadge, UrgencyBadge } from '../common/StatusBadge'
+import { addComment, listComments, listTechnicians, updateTicket } from '../../api/tickets'
+import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
 
 const STATUSES = ['open', 'in_progress', 'resolved', 'closed']
 
 export default function TicketDetail({ ticket, onUpdated }) {
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
-  const [itUsers, setItUsers] = useState([])
+  const [technicians, setTechnicians] = useState([])
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (!ticket) return
     listComments(ticket.id).then(setComments).catch(() => setComments([]))
-    listItUsers().then(setItUsers).catch(() => setItUsers([]))
+    listTechnicians().then(setTechnicians).catch(() => setTechnicians([]))
   }, [ticket?.id])
 
   if (!ticket) return null
@@ -57,7 +57,7 @@ export default function TicketDetail({ ticket, onUpdated }) {
           </div>
           <div className="flex gap-2">
             <StatusBadge value={ticket.status} />
-            <UrgencyBadge value={ticket.urgency} />
+            <PriorityBadge value={ticket.priority} />
           </div>
         </div>
         <p className="text-gray-700 whitespace-pre-wrap">{ticket.description}</p>
@@ -89,7 +89,7 @@ export default function TicketDetail({ ticket, onUpdated }) {
               }
             >
               <option value="">Sin asignar</option>
-              {itUsers.map((u) => (
+              {technicians.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.full_name}
                 </option>
