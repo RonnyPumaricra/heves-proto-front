@@ -19,6 +19,9 @@ export const assignTicket = (id, tecnicoId) =>
 export const changeTicketStatus = (id, status) =>
   api.patch(`/tickets/${id}/estado`, { status }).then((r) => r.data)
 
+export const listTicketHistory = (id) =>
+  api.get(`/tickets/${id}/history`).then((r) => r.data)
+
 export const listComments = (id) =>
   api.get(`/tickets/${id}/comments`).then((r) => r.data)
 

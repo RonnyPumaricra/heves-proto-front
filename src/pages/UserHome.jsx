@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import TicketForm from '../components/user/TicketForm'
 import { StatusBadge, PriorityBadge } from '../components/common/StatusBadge'
 import { changeTicketStatus, listMyTickets } from '../api/tickets'
 
 export default function UserHome() {
+  const navigate = useNavigate()
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
   const [closing, setClosing] = useState(null)
@@ -52,11 +54,12 @@ export default function UserHome() {
               {tickets.map((t) => (
                 <li
                   key={t.id}
-                  className="bg-white border border-gray-200 rounded p-3 flex justify-between items-center gap-3"
+                  onClick={() => navigate(`/usuario/tickets/${t.id}`)}
+                  className="bg-white border border-gray-200 rounded p-3 flex justify-between items-center gap-3 hover:bg-blue-50 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="font-medium truncate">
-                      #{t.id} · {t.title}
+                      <span className="text-blue-700">#{t.id}</span> · {t.title}
                     </div>
                     <div className="text-xs text-gray-500">
                       {new Date(t.created_at).toLocaleString()} · {t.area_name || 'sin área'}
@@ -69,7 +72,10 @@ export default function UserHome() {
                     {t.status === 'RESUELTO' && (
                       <button
                         disabled={closing === t.id}
-                        onClick={() => closeTicket(t.id)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          closeTicket(t.id)
+                        }}
                         className="px-3 py-1 rounded bg-gray-700 text-white text-xs hover:bg-gray-800 disabled:opacity-50"
                       >
                         {closing === t.id ? 'Cerrando…' : 'Cerrar'}

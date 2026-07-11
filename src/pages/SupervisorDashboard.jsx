@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import { StatusBadge, PriorityBadge } from '../components/common/StatusBadge'
 import {
@@ -9,6 +10,7 @@ import {
 } from '../api/tickets'
 
 export default function SupervisorDashboard() {
+  const navigate = useNavigate()
   const [tickets, setTickets] = useState([])
   const [technicians, setTechnicians] = useState([])
   const [stats, setStats] = useState(null)
@@ -87,8 +89,12 @@ export default function SupervisorDashboard() {
               </thead>
               <tbody>
                 {tickets.map((t) => (
-                  <tr key={t.id} className="border-t border-gray-100">
-                    <td className="px-3 py-2">{t.id}</td>
+                  <tr
+                    key={t.id}
+                    onClick={() => navigate(`/tecnico/tickets/${t.id}`)}
+                    className="border-t border-gray-100 hover:bg-blue-50 cursor-pointer"
+                  >
+                    <td className="px-3 py-2 text-blue-600 font-medium">#{t.id}</td>
                     <td className="px-3 py-2">{t.title}</td>
                     <td className="px-3 py-2">{t.area_name || '—'}</td>
                     <td className="px-3 py-2"><PriorityBadge value={t.priority} /></td>
@@ -97,7 +103,7 @@ export default function SupervisorDashboard() {
                     <td className="px-3 py-2 text-gray-500">
                       {new Date(t.created_at).toLocaleString()}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
                       {assigning === t.id ? (
                         <select
                           autoFocus

@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
 
 export default function TicketQueue({ tickets }) {
+  const navigate = useNavigate()
   if (!tickets.length) {
     return <div className="p-6 text-gray-500 text-sm">No hay tickets con esos filtros.</div>
   }
@@ -23,12 +24,12 @@ export default function TicketQueue({ tickets }) {
         </thead>
         <tbody>
           {tickets.map((t) => (
-            <tr key={t.id} className="border-t border-gray-100 hover:bg-gray-50">
-              <td className="px-3 py-2">
-                <Link className="text-blue-600 hover:underline" to={`/tecnico/tickets/${t.id}`}>
-                  {t.id}
-                </Link>
-              </td>
+            <tr
+              key={t.id}
+              onClick={() => navigate(`/tecnico/tickets/${t.id}`)}
+              className="border-t border-gray-100 hover:bg-blue-50 cursor-pointer"
+            >
+              <td className="px-3 py-2 text-blue-600 font-medium">#{t.id}</td>
               <td className="px-3 py-2">{t.title}</td>
               <td className="px-3 py-2">{t.area_name || '—'}</td>
               <td className="px-3 py-2">{t.device?.name || '—'}</td>

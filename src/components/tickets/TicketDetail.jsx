@@ -8,6 +8,7 @@ import {
 } from '../../api/tickets'
 import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
 import { useAuth } from '../../hooks/useAuth'
+import TicketTimeline from './TicketTimeline'
 
 export default function TicketDetail({ ticket, onUpdated }) {
   const { user } = useAuth()
@@ -134,6 +135,8 @@ export default function TicketDetail({ ticket, onUpdated }) {
         )}
         {error && <div className="text-sm text-red-600">{error}</div>}
       </div>
+
+      <TicketTimeline ticketId={ticket.id} reloadKey={ticket.updated_at} />
 
       <div className="bg-white border border-gray-200 rounded p-6">
         <h2 className="font-semibold mb-3">Comentarios</h2>
