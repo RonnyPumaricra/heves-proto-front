@@ -3,7 +3,11 @@ import LoginStaff from './pages/LoginStaff'
 import UserHome from './pages/UserHome'
 import TechnicianDashboard from './pages/TechnicianDashboard'
 import SupervisorDashboard from './pages/SupervisorDashboard'
+import AdminHome from './pages/AdminHome'
 import AdminSLA from './pages/AdminSLA'
+import AdminUsers from './pages/AdminUsers'
+import AdminAreas from './pages/AdminAreas'
+import AdminDevices from './pages/AdminDevices'
 import TicketDetailPage from './pages/TicketDetailPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
@@ -12,7 +16,7 @@ const HOME_BY_ROLE = {
   usuario: '/usuario',
   tecnico: '/tecnico',
   supervisor: '/supervisor',
-  admin: '/tecnico',
+  admin: '/admin',
 }
 
 function RootRedirect() {
@@ -21,6 +25,14 @@ function RootRedirect() {
   if (!user) return <Navigate to="/login" replace />
   return <Navigate to={HOME_BY_ROLE[user.role] || '/login'} replace />
 }
+
+const ADMIN_ROUTES = [
+  { path: '/admin', element: <AdminHome /> },
+  { path: '/admin/sla', element: <AdminSLA /> },
+  { path: '/admin/users', element: <AdminUsers /> },
+  { path: '/admin/areas', element: <AdminAreas /> },
+  { path: '/admin/devices', element: <AdminDevices /> },
+]
 
 export default function App() {
   return (
@@ -51,14 +63,13 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/admin/sla"
-        element={
-          <ProtectedRoute roles={['admin']}>
-            <AdminSLA />
-          </ProtectedRoute>
-        }
-      />
+      {ADMIN_ROUTES.map((r) => (
+        <Route
+          key={r.path}
+          path={r.path}
+          element={<ProtectedRoute roles={['admin']}>{r.element}</ProtectedRoute>}
+        />
+      ))}
       <Route
         path="/tecnico/tickets/:id"
         element={

@@ -7,7 +7,7 @@ const HOME_BY_ROLE = {
   usuario: '/usuario',
   tecnico: '/tecnico',
   supervisor: '/supervisor',
-  admin: '/tecnico',
+  admin: '/admin',
 }
 
 export default function LoginStaff() {

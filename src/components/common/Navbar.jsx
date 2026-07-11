@@ -5,7 +5,7 @@ const HOME_BY_ROLE = {
   usuario: '/usuario',
   tecnico: '/tecnico',
   supervisor: '/supervisor',
-  admin: '/tecnico',
+  admin: '/admin',
 }
 
 export default function Navbar() {
@@ -20,9 +20,14 @@ export default function Navbar() {
       </Link>
       <div className="flex items-center gap-4 text-sm">
         {user.role === 'admin' && (
-          <Link to="/admin/sla" className="text-blue-700 hover:underline">
-            SLA
-          </Link>
+          <>
+            <Link to="/tecnico" className="text-blue-700 hover:underline">Tickets</Link>
+            <Link to="/supervisor" className="text-blue-700 hover:underline">Supervisión</Link>
+            <Link to="/admin" className="text-blue-700 hover:underline">Admin</Link>
+          </>
+        )}
+        {user.role === 'supervisor' && (
+          <Link to="/tecnico" className="text-blue-700 hover:underline">Todos los tickets</Link>
         )}
         <span className="text-gray-600">
           {user.full_name} · <span className="uppercase">{user.role}</span>

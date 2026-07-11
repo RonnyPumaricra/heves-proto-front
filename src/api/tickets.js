@@ -49,3 +49,29 @@ export const listSLAPolicies = () =>
 
 export const updateSLAPolicy = (priority, payload) =>
   api.patch(`/sla-policies/${priority}`, payload).then((r) => r.data)
+
+// Users (admin)
+export const listUsers = (params = {}) =>
+  api.get('/users', { params }).then((r) => r.data)
+export const createUser = (payload) =>
+  api.post('/users', payload).then((r) => r.data)
+export const updateUser = (id, payload) =>
+  api.patch(`/users/${id}`, payload).then((r) => r.data)
+export const changeUserRole = (id, role) =>
+  api.patch(`/users/${id}/rol`, { role }).then((r) => r.data)
+
+// Areas (admin)
+export const createArea = (payload) =>
+  api.post('/areas', payload).then((r) => r.data)
+export const updateArea = (id, payload) =>
+  api.patch(`/areas/${id}`, payload).then((r) => r.data)
+export const deleteArea = (id) =>
+  api.delete(`/areas/${id}`).then((r) => r.data)
+
+// Devices (admin)
+export const createDevice = (payload) =>
+  api.post('/devices', payload).then((r) => r.data)
+export const updateDevice = (id, payload) =>
+  api.patch(`/devices/${id}`, payload).then((r) => r.data)
+export const deleteDevice = (id) =>
+  api.delete(`/devices/${id}`).then((r) => r.data)
