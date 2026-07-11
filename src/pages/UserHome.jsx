@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import Navbar from '../components/common/Navbar'
 import TicketForm from '../components/user/TicketForm'
 import { StatusBadge, PriorityBadge } from '../components/common/StatusBadge'
-import { listMyTickets } from '../api/tickets'
+import { changeTicketStatus, listMyTickets } from '../api/tickets'
 
 export default function UserHome() {
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
+  const [closing, setClosing] = useState(null)
+  const [error, setError] = useState(null)
 
   const refresh = () => {
     setLoading(true)
@@ -20,6 +22,19 @@ export default function UserHome() {
     refresh()
   }, [])
 
+  const closeTicket = async (id) => {
+    setError(null)
+    setClosing(id)
+    try {
+      await changeTicketStatus(id, 'CERRADO')
+      refresh()
+    } catch (err) {
+      setError(err.response?.data?.detail || 'No se pudo cerrar el ticket')
+    } finally {
+      setClosing(null)
+    }
+  }
+
   return (
     <div>
       <Navbar />
@@ -27,6 +42,7 @@ export default function UserHome() {
         <TicketForm onCreated={() => refresh()} />
         <section>
           <h2 className="font-semibold mb-3">Mis reportes</h2>
+          {error && <div className="text-sm text-red-600 mb-2">{error}</div>}
           {loading ? (
             <div className="text-sm text-gray-500">Cargando…</div>
           ) : tickets.length === 0 ? (
@@ -36,19 +52,29 @@ export default function UserHome() {
               {tickets.map((t) => (
                 <li
                   key={t.id}
-                  className="bg-white border border-gray-200 rounded p-3 flex justify-between items-center"
+                  className="bg-white border border-gray-200 rounded p-3 flex justify-between items-center gap-3"
                 >
-                  <div>
-                    <div className="font-medium">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium truncate">
                       #{t.id} · {t.title}
                     </div>
                     <div className="text-xs text-gray-500">
                       {new Date(t.created_at).toLocaleString()} · {t.area_name || 'sin área'}
+                      {t.assigned_to && ` · Técnico: ${t.assigned_to.full_name}`}
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <StatusBadge value={t.status} />
                     <PriorityBadge value={t.priority} />
+                    {t.status === 'RESUELTO' && (
+                      <button
+                        disabled={closing === t.id}
+                        onClick={() => closeTicket(t.id)}
+                        className="px-3 py-1 rounded bg-gray-700 text-white text-xs hover:bg-gray-800 disabled:opacity-50"
+                      >
+                        {closing === t.id ? 'Cerrando…' : 'Cerrar'}
+                      </button>
+                    )}
                   </div>
                 </li>
               ))}

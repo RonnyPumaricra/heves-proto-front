@@ -1,28 +1,43 @@
 import { useEffect, useState } from 'react'
-import { addComment, listComments, listTechnicians, updateTicket } from '../../api/tickets'
+import {
+  addComment,
+  assignTicket,
+  changeTicketStatus,
+  listComments,
+  listTechnicians,
+} from '../../api/tickets'
 import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
-
-const STATUSES = ['open', 'in_progress', 'resolved', 'closed']
+import { useAuth } from '../../hooks/useAuth'
 
 export default function TicketDetail({ ticket, onUpdated }) {
+  const { user } = useAuth()
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
   const [technicians, setTechnicians] = useState([])
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
+  const [assignPickerOpen, setAssignPickerOpen] = useState(false)
+
+  const canManage = user?.role === 'supervisor' || user?.role === 'admin'
 
   useEffect(() => {
     if (!ticket) return
     listComments(ticket.id).then(setComments).catch(() => setComments([]))
-    listTechnicians().then(setTechnicians).catch(() => setTechnicians([]))
-  }, [ticket?.id])
+    if (canManage) {
+      listTechnicians().then(setTechnicians).catch(() => setTechnicians([]))
+    }
+  }, [ticket?.id, canManage])
 
   if (!ticket) return null
 
-  const doUpdate = async (patch) => {
+  const run = async (fn) => {
     setSaving(true)
+    setError(null)
     try {
-      const updated = await updateTicket(ticket.id, patch)
+      const updated = await fn()
       onUpdated?.(updated)
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error al actualizar')
     } finally {
       setSaving(false)
     }
@@ -36,6 +51,8 @@ export default function TicketDetail({ ticket, onUpdated }) {
     setNewComment('')
   }
 
+  const actions = buildActions({ ticket, user, run })
+
   return (
     <div className="space-y-4">
       <div className="bg-white border border-gray-200 rounded p-6 space-y-3">
@@ -46,12 +63,18 @@ export default function TicketDetail({ ticket, onUpdated }) {
             </h1>
             <div className="text-sm text-gray-500 mt-1 space-y-0.5">
               <div>{ticket.area_name || 'Sin área'} · Reportó {ticket.reporter?.full_name}</div>
+              {ticket.assigned_to && (
+                <div>Asignado a: <span className="font-medium text-gray-700">{ticket.assigned_to.full_name}</span></div>
+              )}
               {ticket.device && (
                 <div>
                   Equipo: <span className="font-medium text-gray-700">{ticket.device.name}</span>
                   {' · '}{ticket.device.device_type}
                   {ticket.device.location && ` · ${ticket.device.location}`}
                 </div>
+              )}
+              {ticket.closed_at && (
+                <div>Cerrado: {new Date(ticket.closed_at).toLocaleString()}</div>
               )}
             </div>
           </div>
@@ -62,41 +85,54 @@ export default function TicketDetail({ ticket, onUpdated }) {
         </div>
         <p className="text-gray-700 whitespace-pre-wrap">{ticket.description}</p>
 
-        <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-100">
-          <label className="text-sm">
-            <span className="block text-xs text-gray-500 mb-1">Cambiar estado</span>
-            <select
-              className="w-full border border-gray-300 rounded px-2 py-1"
-              value={ticket.status}
-              disabled={saving}
-              onChange={(e) => doUpdate({ status: e.target.value })}
-            >
-              {STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm">
-            <span className="block text-xs text-gray-500 mb-1">Asignar a</span>
-            <select
-              className="w-full border border-gray-300 rounded px-2 py-1"
-              value={ticket.assigned_to?.id ?? ''}
-              disabled={saving}
-              onChange={(e) =>
-                doUpdate({ assigned_to_id: e.target.value ? Number(e.target.value) : null })
-              }
-            >
-              <option value="">Sin asignar</option>
-              {technicians.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.full_name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        {(actions.length > 0 || canManage) && (
+          <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+            {actions.map((a) => (
+              <button
+                key={a.label}
+                disabled={saving}
+                onClick={a.onClick}
+                className={`px-3 py-1.5 rounded text-sm text-white disabled:opacity-50 ${a.className}`}
+              >
+                {a.label}
+              </button>
+            ))}
+            {canManage && ticket.status !== 'CERRADO' && (
+              assignPickerOpen ? (
+                <select
+                  autoFocus
+                  className="border border-gray-300 rounded px-2 py-1 text-sm"
+                  defaultValue=""
+                  disabled={saving}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const tecId = Number(e.target.value)
+                      setAssignPickerOpen(false)
+                      run(() => assignTicket(ticket.id, tecId))
+                    }
+                  }}
+                  onBlur={() => setAssignPickerOpen(false)}
+                >
+                  <option value="" disabled>
+                    {ticket.assigned_to ? 'Reasignar a…' : 'Asignar a…'}
+                  </option>
+                  {technicians.map((u) => (
+                    <option key={u.id} value={u.id}>{u.full_name}</option>
+                  ))}
+                </select>
+              ) : (
+                <button
+                  disabled={saving}
+                  onClick={() => setAssignPickerOpen(true)}
+                  className="px-3 py-1.5 rounded text-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {ticket.assigned_to ? 'Reasignar técnico' : 'Asignar técnico'}
+                </button>
+              )
+            )}
+          </div>
+        )}
+        {error && <div className="text-sm text-red-600">{error}</div>}
       </div>
 
       <div className="bg-white border border-gray-200 rounded p-6">
@@ -128,4 +164,37 @@ export default function TicketDetail({ ticket, onUpdated }) {
       </div>
     </div>
   )
+}
+
+function buildActions({ ticket, user, run }) {
+  if (!user) return []
+  const isAssigned = ticket.assigned_to?.id === user.id
+  const isReporter = ticket.reporter?.id === user.id
+  const isAdmin = user.role === 'admin'
+  const isTec = user.role === 'tecnico'
+  const acts = []
+
+  if (ticket.status === 'ASIGNADO' && (isAdmin || (isTec && isAssigned))) {
+    acts.push({
+      label: 'Tomar (EN_PROCESO)',
+      className: 'bg-yellow-600 hover:bg-yellow-700',
+      onClick: () => run(() => changeTicketStatus(ticket.id, 'EN_PROCESO')),
+    })
+  }
+  if (ticket.status === 'EN_PROCESO' && (isAdmin || (isTec && isAssigned))) {
+    acts.push({
+      label: 'Marcar resuelto',
+      className: 'bg-green-600 hover:bg-green-700',
+      onClick: () => run(() => changeTicketStatus(ticket.id, 'RESUELTO')),
+    })
+  }
+  if (ticket.status === 'RESUELTO' && (isAdmin || isReporter)) {
+    acts.push({
+      label: 'Cerrar ticket',
+      className: 'bg-gray-700 hover:bg-gray-800',
+      onClick: () => run(() => changeTicketStatus(ticket.id, 'CERRADO')),
+    })
+  }
+
+  return acts
 }

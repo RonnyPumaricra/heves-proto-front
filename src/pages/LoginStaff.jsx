@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 const HOME_BY_ROLE = {
   usuario: '/usuario',
   tecnico: '/tecnico',
-  supervisor: '/tecnico',
+  supervisor: '/supervisor',
   admin: '/tecnico',
 }
 

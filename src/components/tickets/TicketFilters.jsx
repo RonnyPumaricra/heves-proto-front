@@ -1,4 +1,4 @@
-const STATUSES = ['', 'open', 'in_progress', 'resolved', 'closed']
+const STATUSES = ['', 'CREADO', 'ASIGNADO', 'EN_PROCESO', 'RESUELTO', 'CERRADO']
 const PRIORITIES = ['', 'baja', 'media', 'alta', 'critica']
 
 export default function TicketFilters({ value, onChange }) {

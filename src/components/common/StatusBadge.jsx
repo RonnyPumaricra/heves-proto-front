@@ -1,8 +1,9 @@
 const STATUS_STYLES = {
-  open: 'bg-blue-100 text-blue-800',
-  in_progress: 'bg-yellow-100 text-yellow-800',
-  resolved: 'bg-green-100 text-green-800',
-  closed: 'bg-gray-200 text-gray-700',
+  CREADO: 'bg-blue-100 text-blue-800',
+  ASIGNADO: 'bg-indigo-100 text-indigo-800',
+  EN_PROCESO: 'bg-yellow-100 text-yellow-800',
+  RESUELTO: 'bg-green-100 text-green-800',
+  CERRADO: 'bg-gray-200 text-gray-700',
 }
 
 const PRIORITY_STYLES = {
