@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
+import { StatusBadge, PriorityBadge, SLABadge } from '../common/StatusBadge'
 
 export default function TicketQueue({ tickets }) {
   const navigate = useNavigate()
@@ -19,6 +19,7 @@ export default function TicketQueue({ tickets }) {
             <th className="px-3 py-2">Prioridad</th>
             <th className="px-3 py-2">Reportado por</th>
             <th className="px-3 py-2">Asignado a</th>
+            <th className="px-3 py-2">SLA</th>
             <th className="px-3 py-2">Creado</th>
           </tr>
         </thead>
@@ -41,6 +42,7 @@ export default function TicketQueue({ tickets }) {
               </td>
               <td className="px-3 py-2">{t.reporter?.full_name}</td>
               <td className="px-3 py-2">{t.assigned_to?.full_name || '—'}</td>
+              <td className="px-3 py-2"><SLABadge value={t.sla_status} /></td>
               <td className="px-3 py-2 text-gray-500">
                 {new Date(t.created_at).toLocaleString()}
               </td>

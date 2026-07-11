@@ -3,6 +3,7 @@ import LoginStaff from './pages/LoginStaff'
 import UserHome from './pages/UserHome'
 import TechnicianDashboard from './pages/TechnicianDashboard'
 import SupervisorDashboard from './pages/SupervisorDashboard'
+import AdminSLA from './pages/AdminSLA'
 import TicketDetailPage from './pages/TicketDetailPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
@@ -47,6 +48,14 @@ export default function App() {
         element={
           <ProtectedRoute roles={['supervisor', 'admin']}>
             <SupervisorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/sla"
+        element={
+          <ProtectedRoute roles={['admin']}>
+            <AdminSLA />
           </ProtectedRoute>
         }
       />

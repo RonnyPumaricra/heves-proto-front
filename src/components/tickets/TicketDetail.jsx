@@ -6,7 +6,7 @@ import {
   listComments,
   listTechnicians,
 } from '../../api/tickets'
-import { StatusBadge, PriorityBadge } from '../common/StatusBadge'
+import { StatusBadge, PriorityBadge, SLABadge } from '../common/StatusBadge'
 import { useAuth } from '../../hooks/useAuth'
 import TicketTimeline from './TicketTimeline'
 
@@ -74,14 +74,20 @@ export default function TicketDetail({ ticket, onUpdated }) {
                   {ticket.device.location && ` · ${ticket.device.location}`}
                 </div>
               )}
+              {ticket.sla_resolution_due_at && (
+                <div>
+                  SLA resolución: {new Date(ticket.sla_resolution_due_at).toLocaleString()}
+                </div>
+              )}
               {ticket.closed_at && (
                 <div>Cerrado: {new Date(ticket.closed_at).toLocaleString()}</div>
               )}
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-end gap-2 max-w-[50%]">
             <StatusBadge value={ticket.status} />
             <PriorityBadge value={ticket.priority} />
+            <SLABadge value={ticket.sla_status} />
           </div>
         </div>
         <p className="text-gray-700 whitespace-pre-wrap">{ticket.description}</p>

@@ -25,9 +25,9 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'Tickets TI — Hospital',
-        short_name: 'Tickets TI',
-        description: 'Sistema de gestión de incidencias TI hospitalarias',
+        name: 'Servicedesk Universitario',
+        short_name: 'Servicedesk',
+        description: 'Sistema de gestión de tickets de TI para la universidad',
         theme_color: '#2563EB',
         background_color: '#EFF6FF',
         display: 'standalone',

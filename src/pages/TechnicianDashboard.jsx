@@ -41,10 +41,14 @@ export default function TechnicianDashboard() {
             <StatCard label="Total" value={stats.total} />
             <StatCard label="Creados" value={stats.by_status?.CREADO || 0} />
             <StatCard label="En proceso" value={stats.by_status?.EN_PROCESO || 0} />
-            <StatCard label="Resueltos" value={stats.by_status?.RESUELTO || 0} />
             <StatCard
-              label="Críticos"
-              value={stats.by_priority?.critica || 0}
+              label="SLA en riesgo"
+              value={stats.sla?.at_risk || 0}
+              accent="text-amber-700"
+            />
+            <StatCard
+              label="SLA vencidos"
+              value={stats.sla?.breached || 0}
               accent="text-red-600"
             />
           </div>

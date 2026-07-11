@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import TicketForm from '../components/user/TicketForm'
-import { StatusBadge, PriorityBadge } from '../components/common/StatusBadge'
+import { StatusBadge, PriorityBadge, SLABadge } from '../components/common/StatusBadge'
 import { changeTicketStatus, listMyTickets } from '../api/tickets'
 
 export default function UserHome() {
@@ -66,9 +66,10 @@ export default function UserHome() {
                       {t.assigned_to && ` · Técnico: ${t.assigned_to.full_name}`}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                     <StatusBadge value={t.status} />
                     <PriorityBadge value={t.priority} />
+                    <SLABadge value={t.sla_status} />
                     {t.status === 'RESUELTO' && (
                       <button
                         disabled={closing === t.id}

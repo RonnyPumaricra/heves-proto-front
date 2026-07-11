@@ -37,3 +37,12 @@ export const listTechnicians = () =>
   api.get('/users', { params: { role: 'tecnico' } }).then((r) => r.data)
 
 export const summaryStats = () => api.get('/stats/summary').then((r) => r.data)
+
+export const statsByTechnician = () =>
+  api.get('/stats/by-technician').then((r) => r.data)
+
+export const listSLAPolicies = () =>
+  api.get('/sla-policies').then((r) => r.data)
+
+export const updateSLAPolicy = (priority, payload) =>
+  api.patch(`/sla-policies/${priority}`, payload).then((r) => r.data)

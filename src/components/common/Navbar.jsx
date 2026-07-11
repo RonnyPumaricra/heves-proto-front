@@ -19,6 +19,11 @@ export default function Navbar() {
         Servicedesk · Universidad
       </Link>
       <div className="flex items-center gap-4 text-sm">
+        {user.role === 'admin' && (
+          <Link to="/admin/sla" className="text-blue-700 hover:underline">
+            SLA
+          </Link>
+        )}
         <span className="text-gray-600">
           {user.full_name} · <span className="uppercase">{user.role}</span>
         </span>
