@@ -64,6 +64,9 @@ export default function UserHome() {
                     <div className="text-xs text-gray-500">
                       {new Date(t.created_at).toLocaleString()} · {t.area_name || 'sin área'}
                       {t.assigned_to && ` · Técnico: ${t.assigned_to.full_name}`}
+                      {t.status === 'CERRADO' && !t.survey && (
+                        <span className="ml-2 text-amber-700">· Pendiente encuesta</span>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">

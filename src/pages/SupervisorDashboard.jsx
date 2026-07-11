@@ -80,7 +80,7 @@ export default function SupervisorDashboard() {
         </header>
 
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
             <KPICard
               label="Cumplimiento SLA"
               value={stats.sla?.compliance_percent != null ? `${stats.sla.compliance_percent}%` : '—'}
@@ -104,6 +104,20 @@ export default function SupervisorDashboard() {
             <KPICard
               label="T. resolución prom."
               value={minutesToStr(stats.avg_resolution_minutes)}
+            />
+            <KPICard
+              label="CSAT"
+              value={
+                stats.csat?.avg_rating != null
+                  ? `${stats.csat.avg_rating.toFixed(1)} ★`
+                  : '—'
+              }
+              sub={
+                stats.csat?.response_count
+                  ? `${stats.csat.response_count} respuestas · ${stats.csat.response_rate_percent}%`
+                  : 'sin respuestas'
+              }
+              accent="text-amber-600"
             />
           </div>
         )}

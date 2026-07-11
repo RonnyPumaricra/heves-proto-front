@@ -9,6 +9,7 @@ import {
 import { StatusBadge, PriorityBadge, SLABadge } from '../common/StatusBadge'
 import { useAuth } from '../../hooks/useAuth'
 import TicketTimeline from './TicketTimeline'
+import SurveyModal from './SurveyModal'
 
 export default function TicketDetail({ ticket, onUpdated }) {
   const { user } = useAuth()
@@ -18,8 +19,15 @@ export default function TicketDetail({ ticket, onUpdated }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
   const [assignPickerOpen, setAssignPickerOpen] = useState(false)
+  const [surveyDismissed, setSurveyDismissed] = useState(false)
 
   const canManage = user?.role === 'supervisor' || user?.role === 'admin'
+  const isReporter = user?.id === ticket?.reporter?.id
+  const showSurveyModal =
+    isReporter &&
+    ticket?.status === 'CERRADO' &&
+    !ticket?.survey &&
+    !surveyDismissed
 
   useEffect(() => {
     if (!ticket) return
@@ -141,6 +149,34 @@ export default function TicketDetail({ ticket, onUpdated }) {
         )}
         {error && <div className="text-sm text-red-600">{error}</div>}
       </div>
+
+      {ticket.survey && (
+        <div className="bg-white border border-gray-200 rounded p-6">
+          <h2 className="font-semibold mb-2">Evaluación del reportante</h2>
+          <div className="flex items-center gap-2 text-amber-500 text-xl">
+            {'★'.repeat(ticket.survey.rating)}
+            <span className="text-gray-300">
+              {'★'.repeat(5 - ticket.survey.rating)}
+            </span>
+            <span className="text-sm text-gray-500 ml-2">
+              {new Date(ticket.survey.created_at).toLocaleString()}
+            </span>
+          </div>
+          {ticket.survey.comment && (
+            <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap">
+              {ticket.survey.comment}
+            </p>
+          )}
+        </div>
+      )}
+
+      {showSurveyModal && (
+        <SurveyModal
+          ticketId={ticket.id}
+          onDone={(survey) => onUpdated?.({ ...ticket, survey })}
+          onDismiss={() => setSurveyDismissed(true)}
+        />
+      )}
 
       <TicketTimeline ticketId={ticket.id} reloadKey={ticket.updated_at} />
 

@@ -36,6 +36,9 @@ export const listDevices = (params = {}) =>
 export const listTechnicians = () =>
   api.get('/users', { params: { role: 'tecnico' } }).then((r) => r.data)
 
+export const submitTicketSurvey = (id, payload) =>
+  api.post(`/tickets/${id}/survey`, payload).then((r) => r.data)
+
 export const summaryStats = () => api.get('/stats/summary').then((r) => r.data)
 
 export const statsByTechnician = () =>
